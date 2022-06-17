@@ -1,28 +1,51 @@
-import { useState } from "react";
+import { useState } from 'react';
+import axios from 'axios';
 
 const TodoForm = () => {
   const [details, setDetails] = useState({
-    title: "",
-    description: "",
+    title: '',
+    descriptions: '',
   });
+
+  console.log(details.descriptions, details.title);
   const postDetails = (e) => {
     setDetails((oldValues) => ({
       ...oldValues,
       [e.target.name]: e.target.value,
     }));
   };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await axios.post(
+      'https://robottodoapi.herokuapp.com/api/v1/todo/',
+
+      {
+        title: details.title,
+        decriptions: details.descriptions,
+      }
+    );
+  };
   return (
     <div className="form-body">
-      <form>
+      <form onSubmit={handleSubmit}>
         <label htmlFor="title">Title: </label>
-        <input type="text" id="title" name="title" />
-        <label htmlFor="description">Description:</label>
+        <input
+          type="text"
+          id="title"
+          name="title"
+          value={details.title}
+          onChange={postDetails}
+        />
+        <label htmlFor="descriptions">Description:</label>
         <textarea
-          name="description"
-          id="description"
+          name="descriptions"
+          id="descriptions"
           cols="5"
           rows="3"
+          value={details.descriptions}
+          onChange={postDetails}
         ></textarea>
+        <button>Submit</button>
       </form>
     </div>
   );
