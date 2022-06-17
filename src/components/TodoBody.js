@@ -1,34 +1,53 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
-const TodoBody = () => {
-  const [posts, setPost] = useState([]);
-  useEffect(() => {
-    const getPost = async () => {
-      const { data } = await axios.get(
-        'https://robottodoapi.herokuapp.com/api/v1/todo/'
-      );
-      setPost(data);
-    };
-    getPost();
-  }, []);
+import { baseUrl } from '../App';
 
+const TodoBody = ({ todos, getTodos }) => {
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [selected, setSelected] = useState(null);
   const handleDelete = async (id) => {
-    await axios.delete(`https://robottodoapi.herokuapp.com/api/v1/todo/${id}/`);
+    await axios.delete(baseUrl + id + '/');
+    getTodos();
+  };
+
+  console.log(selected);
+
+  const completeTodo = async (id, title, decriptions) => {
+    setSelected(id);
+    if (selected === id) {
+      setIsCompleted(!isCompleted);
+      await axios.put(baseUrl + id + '/', {
+        title: title,
+        decriptions: decriptions,
+        completed: isCompleted,
+      });
+    }
   };
 
   return (
     <div className="body-container">
-      {posts.map((post) => {
+      {todos.map((todo, index) => {
         return (
-          <React.Fragment key={post.id}>
+          <React.Fragment key={todo.id}>
             <div className="todo-details">
               <div className="todo-list">
-                <h4 className="title">{post.title}</h4>
-                <p className="description">{post.decriptions}</p>
+                <h4 className="title">{todo?.title}</h4>
+                <p className="description">{todo?.decriptions}</p>
               </div>
-              <div className="todo-delete">
-                <AiOutlineDelete onClick={() => handleDelete(post.id)} />
+              <div className="todo-action">
+                <input
+                  className="todo-check"
+                  checked={selected === todo.id}
+                  onChange={() =>
+                    completeTodo(todo?.id, todo?.title, todo?.decriptions)
+                  }
+                  type="checkbox"
+                />
+                <AiOutlineDelete
+                  className="todo-delete"
+                  onClick={() => handleDelete(todo?.id)}
+                />
               </div>
             </div>
           </React.Fragment>

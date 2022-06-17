@@ -1,29 +1,31 @@
 import { useState } from 'react';
 import axios from 'axios';
 
-const TodoForm = () => {
+const TodoForm = ({ getTodos }) => {
   const [details, setDetails] = useState({
     title: '',
-    descriptions: '',
+    decriptions: '',
+    completed: false,
   });
-
-  console.log(details.descriptions, details.title);
   const postDetails = (e) => {
     setDetails((oldValues) => ({
       ...oldValues,
       [e.target.name]: e.target.value,
     }));
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     await axios.post(
       'https://robottodoapi.herokuapp.com/api/v1/todo/',
-
-      {
-        title: details.title,
-        decriptions: details.descriptions,
-      }
+      details
     );
+    getTodos();
+
+    setDetails({
+      title: '',
+      decriptions: '',
+    });
   };
   return (
     <div className="form-body">
@@ -36,13 +38,13 @@ const TodoForm = () => {
           value={details.title}
           onChange={postDetails}
         />
-        <label htmlFor="descriptions">Description:</label>
+        <label htmlFor="decriptions">Description:</label>
         <textarea
-          name="descriptions"
-          id="descriptions"
+          name="decriptions"
+          id="decriptions"
           cols="5"
           rows="3"
-          value={details.descriptions}
+          value={details.decriptions}
           onChange={postDetails}
         ></textarea>
         <button>Submit</button>
