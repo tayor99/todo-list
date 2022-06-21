@@ -64,3 +64,18 @@ body {
   font-size: 1.1rem;
   color: #d5cfcf;
 }
+
+.todo-delete {
+  color: white;
+  font-size: 1.3rem;
+}
+input[type='checkbox'] {
+  background-color: #fff;
+  margin: 0;
+  color: #fd746c;
+  width: 15px;
+  height: 15px;
+  border: 0.15em solid #fd746c;
+  border-radius: 0.15em;
+  transform: translateY(-0.075em);
+}
